@@ -26,9 +26,9 @@ class upload(upload_orig):
 setuptools.setup(
   name="evil_py",
   version="1.0.0",
-  author="sn0wfa11",
+  author="prohaxx0r",
   author_email="dontemail@me.com",
-  description="MSF Payload",
+  description="rshell",
   long_description="",
   long_description_content_type="text/markdown",
   url="https://github.com/SimonGurney",
